@@ -1,7 +1,13 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { VehiclePerson } from '../../api/VehiclePerson';
 
-export default function Lists({ ownersList }) {
+
+export interface ListProps {
+  ownersList: VehiclePerson[] | undefined
+}
+
+export default function Lists({ ownersList } : ListProps ) {
 
   // ==== CSR : Client Side Rendering
 
@@ -22,7 +28,7 @@ export default function Lists({ ownersList }) {
       <h2>Lists pages</h2>
 
       <div>
-        { ownersList.map((owner, index) => (
+        { ownersList?.map((owner, index) => (
           <div key={index}>
             <Link as={`/${owner.vehicle}/${owner.ownerName}`} href="/[vehicle]/[person]">
               <a>
@@ -41,7 +47,14 @@ export default function Lists({ ownersList }) {
 Lists.getInitialProps = async () => {
   const response = await fetch('http://localhost:4001/vehicles');
 
-  const ownersList = await response.json();
+  const ownersList: VehiclePerson[] | undefined = await response.json();
 
   return { ownersList: ownersList }
 };
+
+// TypeScript
+// export interface VehiclePerson {
+//   vehicle: string,
+//   ownerName: string,
+//   details: string
+// }

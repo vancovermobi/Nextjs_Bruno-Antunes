@@ -1,6 +1,13 @@
+import { NextPageContext } from 'next';
 import { useRouter } from 'next/dist/client/router';
 import { useEffect, useState } from 'react';
-export default function Person({ ownersList }) {
+import { VehiclePerson } from '../../../api/VehiclePerson';
+
+export interface PersonProps {
+  ownersList?: VehiclePerson[]
+}
+
+export default function Person({ ownersList } : PersonProps) {
   const router = useRouter();
   console.log('Router: ', router.query); // check on Server and Browser
 
@@ -9,16 +16,16 @@ export default function Person({ ownersList }) {
     async function loadData() {
       const url = `http://localhost:4001/vehicles?ownerName=${router.query.person}&vehicle=${router.query.vehicle}`;
       const response = await fetch(url);
-      const ownersList = await response.json();
+      const ownersList: VehiclePerson[] | undefined = await response.json();
 
       setOwners(ownersList);
     }
-    if(ownersList.length == 0) {      
+    if(ownersList?.length == 0) {      
       loadData();
     }
   }, []);
 
-  if (!owners[0] && ownersList.length == 0) {
+  if (!owners?.[0] && ownersList?.length == 0) {
     return <div>loading ...</div>
   }
   return (
@@ -29,27 +36,31 @@ export default function Person({ ownersList }) {
       <pre>
         {/* { JSON.stringify(ownersList, null , 4 ) } */}
         {/* { ownersList[0]?.details } */}
-        {owners[0]?.details}
+        {owners?.[0].details}
       </pre>
     </>
   );
 }
 
 // == SSR : Server Side rendering ==== //
-
-Person.getInitialProps = async ctx => {
-  if (!ctx.req) {
-    return { ownersList: [] };
+interface MyNextPageContext extends NextPageContext {
+  query: {
+    person: string,
+    vehicle: string
+  }
+}
+Person.getInitialProps = async ( { query , req}: MyNextPageContext) => {
+  if (!req) {
+    return { ownersList: [] };  
   }
 
-  const { query } = ctx;
   //console.log('Query: ', query); // check on Server
 
   const url = `http://localhost:4001/vehicles?ownerName=${query.person}&vehicle=${query.vehicle}`;
   //   console.log('Url: ',url);
   const response = await fetch(url);
 
-  const ownersList = await response.json();
+  const ownersList: VehiclePerson[] | undefined = await response.json();
   //   console.log(ownersList);
 
   return { ownersList: ownersList };
