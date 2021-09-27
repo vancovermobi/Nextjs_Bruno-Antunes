@@ -1,3 +1,4 @@
+import { authenticated } from './people';
 import { NextApiRequest , NextApiResponse } from "next";
 import { INFVehicle } from "../../../api/VehiclePerson";
 // import sqlite  from 'sqlite';
@@ -5,7 +6,7 @@ import { INFVehicle } from "../../../api/VehiclePerson";
 const sqlite = require('sqlite');
 const sqlite3 = require('sqlite3');
 
-export default async function getAllVehicles( req: NextApiRequest , res: NextApiResponse ) {
+export default authenticated(async function getAllVehicles( req: NextApiRequest , res: NextApiResponse ) {
     if (req.method !== 'GET') {
         res.status(500).json({message: "Sory we only accept GET method"}) ;
     }
@@ -20,4 +21,4 @@ export default async function getAllVehicles( req: NextApiRequest , res: NextApi
     res.json(vehicle) ;
     // res.json({ hello: 'world' , method: req.method }) ;
 
-};
+});

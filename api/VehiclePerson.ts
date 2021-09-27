@@ -8,7 +8,8 @@ export interface VehiclePerson {
 export interface INFPeople {
   id: number,
   name: string,
-  email: string
+  email: string,
+  password: string
 } 
 export interface INFVehicle {
   id: number,
