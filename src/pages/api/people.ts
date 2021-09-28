@@ -11,7 +11,8 @@ export const authenticated = (fn: NextApiHandler) => async (
     req: NextApiRequest,
     res: NextApiResponse
 ) => {
-    verify(req.headers.authorization!, secret, async function(err, decoded) {
+    // verify(req.headers.authorization!, secret, async function(err, decoded) {
+    verify(req.cookies.authCookie!, secret, async function(err, decoded) {
         if (!err && decoded) {
           return await fn(req, res);
         }
@@ -21,9 +22,9 @@ export const authenticated = (fn: NextApiHandler) => async (
 };
 
 export default authenticated (async function getPeople( req: NextApiRequest , res: NextApiResponse ) {
-    if (req.method !== 'GET') {
-        res.status(500).json({message: "Sory we only accept GET method"}) ;
-    }
+    // if (req.method !== 'GET') {
+    //     res.status(500).json({message: "Sory we only accept GET method"}) ;
+    // }
     const db = await open({
         filename:"./mydb.sqlite",
         driver: sqlite3.cached.Database

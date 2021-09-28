@@ -5,6 +5,7 @@ import sqlite3 from 'sqlite3';
 import sqlite ,{ open } from 'sqlite';
 import {sign } from 'jsonwebtoken' ;
 import { secret } from '../../../api/secret';
+import  cookie  from 'cookie' ;
 // const jwt = require('jsonwebtoken');
 
 // const sqlite = require('sqlite');
@@ -35,8 +36,20 @@ export default async function LogIn(req: NextApiRequest, res: NextApiResponse) {
                              secret, 
                              { expiresIn: '1h' }
             );
+            // Cookie
+            res.setHeader('Set-Cookie', cookie.serialize('authCookie', jwt , {
+                httpOnly: true,
+                secure: process.env.NODE_ENV !== 'development',
+                sameSite: 'strict',
+                maxAge: 3600,
+                path: '/'
+            }))
+            // JsonWebToken
+            // res.json({message: "OK" , authJWToken: jwt });
 
-            res.json({message: "OK" , authToken: jwt });
+            // Cookie
+            res.json({message: "Welcome back to the app !" , authCookie: jwt });
+
         }else {
             res.json({message: "Ops , something went wrong !"}); 
         }      

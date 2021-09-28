@@ -7,9 +7,9 @@ const sqlite = require('sqlite');
 const sqlite3 = require('sqlite3');
 
 export default authenticated(async function getAllVehicles( req: NextApiRequest , res: NextApiResponse ) {
-    if (req.method !== 'GET') {
-        res.status(500).json({message: "Sory we only accept GET method"}) ;
-    }
+    // if (req.method !== 'GET') {
+    //     res.status(500).json({message: "Sory we only accept GET method"}) ;
+    // }
 
     const db = await sqlite.open({
         filename:"./mydb.sqlite",
